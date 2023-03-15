@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 const connectDB = require('./server/database/connection')
+const authRoute = require('./server/routes/Auth')
 
 const corsOptions = {
     origin: '*',
@@ -24,6 +25,8 @@ connectDB()
 app.get('/', async (req, res) => {
     res.send('Welcome to eShop server.')
 })
+
+app.use("/auth", authRoute)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}.`);
