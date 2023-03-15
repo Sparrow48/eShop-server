@@ -5,6 +5,7 @@ const cors = require('cors')
 
 const connectDB = require('./server/database/connection')
 const authRoute = require('./server/routes/Auth')
+const productRoute = require('./server/routes/Product')
 
 const corsOptions = {
     origin: '*',
@@ -26,7 +27,8 @@ app.get('/', async (req, res) => {
     res.send('Welcome to eShop server.')
 })
 
-app.use("/auth", authRoute)
+app.use('/auth', authRoute)
+app.use('/product', productRoute)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}.`);
