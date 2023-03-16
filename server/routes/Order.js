@@ -33,6 +33,21 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/', async (req, res) => {
+    try {
+        const orders = await Order.find().
+            populate('user', '-password').
+            populate('product').
+            exec();
+
+        res.json(orders).status(200)
+    } catch (error) {
+        res.status(500).send({
+            message: error?.message || 'Something went wrong.'
+        })
+    }
+})
+
 router.get('/:_id', async (req, res) => {
 
     if (!req.params._id) {
