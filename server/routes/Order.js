@@ -33,4 +33,35 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/:_id', async (req, res) => {
+
+    if (!req.params._id) {
+        res.status(400).json({ message: "Missing id in query." })
+        return
+    }
+
+    try {
+        const _id = req.params._id
+        const order = await Order.findOne({ _id }).
+            populate('user', '-password').
+            populate('product').
+            exec();
+
+        if (!order) {
+            res.status(404).send({
+                message: 'No order found.'
+            })
+            return
+        }
+
+        res.json(order).status(200)
+    } catch (error) {
+        res.status(500).send({
+            message: error?.message || 'Something went wrong.'
+        })
+    }
+
+
+})
+
 module.exports = router

@@ -13,11 +13,11 @@ const orderSchema = new Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'user'
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product'
+        ref: 'product'
     },
     paymentMethod: {
         type: String,
