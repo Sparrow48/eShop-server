@@ -38,4 +38,21 @@ router.post('/', async (req, res) => {
     }
 })
 
+router.get('/', async (req, res) => {
+    if (!req.body) {
+        res.status(400).json({ message: "Bad request." })
+        return
+    }
+
+    try {
+        let products = await Product.find()
+        res.json(products).status(200)
+    } catch (error) {
+        res.status(500).send({
+            message: error?.message || 'Something went wrong.'
+        })
+    }
+})
+
+
 module.exports = router
