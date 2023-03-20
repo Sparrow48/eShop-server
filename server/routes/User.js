@@ -30,6 +30,23 @@ router.get('/profile', authenticateUser, async (req, res) => {
     }
 })
 
+router.patch('/:id', authenticateUser, async (req, res) => {
+    if (!req.body) {
+        res.status(400).json({ message: "Bad request." })
+        return
+    }
+    try {
+        let updateUser = req.body
+        const response = await User.findOneAndUpdate({ _id: req.params.id }, updateUser, {
+            new: true
+        }).select("-password");
+        res.json(response).status(200)
 
+    } catch (error) {
+        res.status(500).send({
+            message: error?.message || 'Something went wrong.'
+        })
+    }
+})
 
 module.exports = router
