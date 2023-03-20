@@ -7,6 +7,7 @@ const connectDB = require('./server/database/connection')
 const authRoute = require('./server/routes/Auth')
 const productRoute = require('./server/routes/Product')
 const orderRoute = require('./server/routes/Order')
+const userRoute = require('./server/routes/User')
 
 const corsOptions = {
     origin: '*',
@@ -31,6 +32,7 @@ app.get('/', async (req, res) => {
 app.use('/auth', authRoute)
 app.use('/product', productRoute)
 app.use('/order', orderRoute)
+app.use('/user', userRoute)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}.`);
