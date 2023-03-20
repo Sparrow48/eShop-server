@@ -10,7 +10,8 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        immutable: true
     },
     password: {
         type: String,
@@ -19,7 +20,13 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: false
+    },
+    address: {
+        type: String,
+        required: false
     }
+}, {
+    timestamps: true
 })
 
 const User = mongoose.model('user', userSchema)
