@@ -21,7 +21,6 @@ router.post('/', async (req, res) => {
             paymentMethod,
             address,
             phone,
-            createdAt
         })
 
         const ret = await order.save()
