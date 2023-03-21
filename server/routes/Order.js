@@ -10,17 +10,23 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const { name, amount, user, product, paymentMethod, address, phone } = req.body
-        const createdAt = JSON.parse(JSON.stringify(new Date()))
+        const { name, user, products, paymentMethod, address, phone, deliveryFee, totalDiscount = 0 } = req.body
+        let amount = deliveryFee;
+        for (let product of products) {
+            amount += (product.quantity * product.price)
+        }
 
         const order = new Order({
             name,
             amount,
             user,
-            product,
+            products,
             paymentMethod,
             address,
             phone,
+            deliveryFee,
+            totalDiscount,
+            isDelivered: false
         })
 
         const ret = await order.save()
@@ -36,7 +42,7 @@ router.get('/', async (req, res) => {
     try {
         const orders = await Order.find().
             populate('user', '-password').
-            populate('product').
+            populate('products.product').
             exec();
 
         res.json(orders).status(200)

@@ -15,10 +15,26 @@ const orderSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'product'
-    },
+    products: [
+        {
+            product: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'product'
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+            price: {
+                type: Number,
+                required: true
+            },
+            discount: {
+                type: Number,
+                required: false
+            }
+        }
+    ],
     paymentMethod: {
         type: String,
         required: true
@@ -31,6 +47,18 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
+    deliveryFee: {
+        type: Number,
+        required: true
+    },
+    totalDiscount: {
+        type: Number,
+        required: false
+    },
+    isDelivered: {
+        type: Boolean,
+        required: true
+    }
 }, {
     timestamps: true
 })
