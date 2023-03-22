@@ -63,7 +63,7 @@ router.get('/purchase-history', authenticateUser, async (req, res) => {
         const { uId } = userData
         let purchases = await Order.find({ user: uId }).
             populate('user', '-password').
-            populate('product').
+            populate('products.product').
             exec();
 
         res.json(purchases).status(200)

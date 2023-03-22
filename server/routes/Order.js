@@ -64,7 +64,7 @@ router.get('/:_id', async (req, res) => {
         const _id = req.params._id
         const order = await Order.findOne({ _id }).
             populate('user', '-password').
-            populate('product').
+            populate('products.product').
             exec();
 
         if (!order) {
