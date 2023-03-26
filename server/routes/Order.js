@@ -1,7 +1,9 @@
 const express = require('express')
 const router = express.Router()
+const jwtDecode = require('jwt-decode')
 
 const Order = require('./../model/Order')
+const authenticateUser = require('./../Middleware/AuthenticateUser')
 
 router.post('/', async (req, res) => {
     if (!req.body) {
@@ -52,6 +54,27 @@ router.get('/', async (req, res) => {
         })
     }
 })
+
+router.get('/:userId', async (req, res) => {
+    try {
+        const authToken = req.headers.authorization
+        const token = authToken.split(' ')[1]
+        const userData = jwtDecode(token)
+        const { uId } = userData
+
+        const orders = await Order.find({}).
+            populate('user', '-password').
+            populate('product').
+            exec();
+
+        res.json(orders).status(200)
+    } catch (error) {
+        res.status(500).send({
+            message: error?.message || 'Something went wrong.'
+        })
+    }
+})
+
 
 router.get('/:_id', async (req, res) => {
 
