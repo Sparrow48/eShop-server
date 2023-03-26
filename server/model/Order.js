@@ -3,6 +3,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const orderSchema = new Schema({
+    order: {
+        type: Number,
+        default: 10000
+    },
     name: {
         type: String,
         required: true
@@ -39,7 +43,7 @@ const orderSchema = new Schema({
         type: String,
         required: true
     },
-    address: {
+    deliveredTo: {
         type: String,
         required: true
     },
@@ -55,13 +59,22 @@ const orderSchema = new Schema({
         type: Number,
         required: false
     },
-    isDelivered: {
-        type: Boolean,
+    deliveryStatus: {
+        type: String,
         required: true
     }
 }, {
     timestamps: true
 })
+
+orderSchema.virtual('nextMyAutoIncrementField').get(function () {
+    return this.order + 1;
+});
+
+orderSchema.pre('save', function (next) {
+    this.order = this.nextMyAutoIncrementField;
+    next();
+});
 
 const Order = mongoose.model('order', orderSchema)
 module.exports = Order

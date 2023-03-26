@@ -3,6 +3,7 @@ const router = express.Router()
 const jwtDecode = require('jwt-decode')
 
 const Order = require('./../model/Order')
+const Product = require('./../model/Product')
 const authenticateUser = require('./../Middleware/AuthenticateUser')
 
 router.post('/', async (req, res) => {
@@ -12,10 +13,10 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const { name, user, products, paymentMethod, address, phone, deliveryFee, totalDiscount = 0 } = req.body
+        const { name, user, products, paymentMethod, deliveredTo, phone, deliveryFee, totalDiscount = 0 } = req.body
         let amount = deliveryFee;
         for (let product of products) {
-            amount += (product.quantity * product.price)
+            amount += (product.quantity * product.price) - totalDiscount
         }
 
         const order = new Order({
@@ -24,14 +25,28 @@ router.post('/', async (req, res) => {
             user,
             products,
             paymentMethod,
-            address,
+            deliveredTo,
             phone,
             deliveryFee,
             totalDiscount,
-            isDelivered: false
+            deliveryStatus: 'pending'
         })
 
         const ret = await order.save()
+
+        const updateProduct = async (_product) => {
+            const updateAvailable = { $inc: { available: -(_product?.quantity) } };
+            const res = await Product.findOneAndUpdate({ _id: _product?.product }, updateAvailable, {
+                new: true
+            })
+            return res;
+        };
+
+        const requests = ret.products.map((_product) => {
+            return updateProduct(_product);
+        });
+
+        const response = await Promise.all(requests);
         res.json(ret)
     } catch (error) {
         res.status(500).send({
@@ -44,7 +59,7 @@ router.get('/', async (req, res) => {
     try {
         const orders = await Order.find().
             populate('user', '-password').
-            populate('products.product').
+            populate('products.product', '_id title').
             exec();
 
         res.json(orders).status(200)
