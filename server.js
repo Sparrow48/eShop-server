@@ -8,6 +8,7 @@ const authRoute = require('./server/routes/Auth')
 const productRoute = require('./server/routes/Product')
 const orderRoute = require('./server/routes/Order')
 const userRoute = require('./server/routes/User')
+const fileRoute = require('./server/routes/FileSystem')
 
 const corsOptions = {
     origin: '*',
@@ -33,6 +34,7 @@ app.use('/auth', authRoute)
 app.use('/product', productRoute)
 app.use('/order', orderRoute)
 app.use('/user', userRoute)
+app.use('/upload', fileRoute)
 
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}.`);
