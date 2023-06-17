@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 
 const User = require('./../model/User')
+const { loginSchema } = require('./../validator/userValidator')
 
 router.post('/user', async (req, res) => {
     if (!req.body) {
@@ -49,7 +50,8 @@ router.post('/login', async (req, res) => {
     }
 
     try {
-        let { username, password } = req.body
+        const result = await loginSchema.validateAsync(req.body)
+        let { username, password } = result
         let secret = process.env.JWT_SECRET_ADMIN
         let isUserExist = await User.findOne({ username })
 
