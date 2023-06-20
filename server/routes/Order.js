@@ -5,6 +5,7 @@ const jwtDecode = require('jwt-decode')
 const Order = require('./../model/Order')
 const Product = require('./../model/Product')
 const authenticateUser = require('./../Middleware/AuthenticateUser')
+const { orderSchema } = require('./../validator/ValidateOrder')
 
 router.post('/', async (req, res) => {
     if (!req.body) {
@@ -13,7 +14,8 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const { name, user, products, paymentMethod, deliveredTo, phone, deliveryFee, totalDiscount = 0 } = req.body
+        let validateResponse = await orderSchema.validateAsync(req.body)
+        const { name, user, products, paymentMethod, deliveredTo, phone, deliveryFee, totalDiscount = 0 } = validateResponse
         let amount = deliveryFee;
         for (let product of products) {
             amount += (product.quantity * product.price) - totalDiscount
