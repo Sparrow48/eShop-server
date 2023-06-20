@@ -18,7 +18,7 @@ const orderSchema = Joi.object({
         ),
     deliveredTo: Joi.string().min(5).required(),
     paymentMethod: Joi.string().required(),
-    phone: Joi.string().min(11).required(),
+    phone: Joi.string().min(11).required().pattern(/^[0-9]+$/).message("Invalid phone number."),
     deliveryFee: Joi.number().min(0).required(),
     totalDiscount: Joi.number().min(0),
 })
