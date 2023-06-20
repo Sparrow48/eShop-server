@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 
 const User = require('./../model/User')
-const { loginSchema } = require('./../validator/userValidator')
+const { loginSchema, registrationSchema } = require('./../validator/userValidator')
 
 router.post('/user', async (req, res) => {
     if (!req.body) {
@@ -14,7 +14,8 @@ router.post('/user', async (req, res) => {
     }
 
     try {
-        const { name, username, email = '', password } = req.body
+        const result = await registrationSchema.validateAsync(req.body)
+        const { name, username, email = '', password } = result
         const hashPassword = await bcrypt.hash(password, 10)
 
         const isUserExist = await User.findOne({ username })
