@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 
 const Product = require('./../model/Product')
+const { productSchema } = require('./../validator/ValidateProduct')
+
 
 router.post('/', async (req, res) => {
     if (!req.body) {
@@ -10,12 +12,12 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const { title, brand, category, description, image, pId, available, price } = req.body
-        const existingProduct = await Product.findOne({ pId })
+        let response = await productSchema.validateAsync(req.body)
+        const { title, brand, category, description, image, pId, available, price } = response
+        const existingProduct = await Product.findOne({ title })
 
         if (existingProduct) {
-            res.status(409).json({ message: 'Product already exist.' })
-            return
+            throw new Error('Product with this title already exist.');
         }
 
         const product = new Product({

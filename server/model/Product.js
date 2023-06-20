@@ -5,7 +5,9 @@ const Schema = mongoose.Schema
 const productSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: true,
+        unique: true
+
     },
     brand: {
         type: String,
@@ -22,11 +24,6 @@ const productSchema = new Schema({
     image: {
         type: String,
         required: true
-    },
-    pId: {
-        type: String,
-        required: true,
-        unique: true
     },
     available: {
         type: Number,
